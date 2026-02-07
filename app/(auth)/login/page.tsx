@@ -33,8 +33,8 @@ export default function LoginPage() {
         console.log(data)
     
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-          const response = await axios.post(`${apiUrl}/api/auth/login`, data);
+          //const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+          const response = await axios.post(`/api/auth/login`, data);
           console.log("Registration successful:", response.data);
           // Redirect or show success message here
         } catch (error: any) {
