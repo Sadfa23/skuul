@@ -31,7 +31,8 @@ export default function RegisterPage() {
     console.log(data)
 
     try {
-      const response = await axios.post(`http://localhost:3000/api/auth/register`, data);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || ""; 
+      const response = await axios.post(`${apiUrl}/api/auth/register`, data);
       console.log("Registration successful:", response.data);
       // Redirect or show success message here
     } catch (error: any) {
