@@ -56,7 +56,7 @@ model User {
   last_name     String?
   role          UserRole  @default(STUDENT)
   bio           String?
-  avatar_url    String @default("https://example.com/default-avatar.png")
+  avatar_url    String    @default("https://example.com/default-avatar.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]

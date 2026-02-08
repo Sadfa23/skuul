@@ -1,5 +1,5 @@
 // app/register/page.tsx
-"use client"
+
 "use client";
 
 import React, { useState } from "react";
@@ -7,8 +7,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { signupInputSchema, UserAuthInput } from "@/types/auth.types";
+import { redirect } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,13 +32,24 @@ export default function RegisterPage() {
     setIsLoading(true);
     setServerError(null);
 
-    console.log(data)
-
     try {
       //const apiUrl = process.env.NEXT_PUBLIC_API_URL || ""; 
       const response = await axios.post(`/api/auth/register`, data);
-      console.log("Registration successful:", response.data);
-      // Redirect or show success message here
+      // AUTO LOGIN
+    const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false
+      })
+  
+      if (res?.error) {
+        throw new Error("Auto-login failed")
+      }
+  
+      // SAME redirect logic as login
+      router.push("/redirect")
+  
+      
     } catch (error: any) {
       setServerError(
         error.response?.data?.message || "Something went wrong. Please try again."

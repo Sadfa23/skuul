@@ -13,8 +13,14 @@ import { loginInputSchema, type UserLoginInput } from "@/types/auth.types"
 import { register } from "module"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { Session } from "next-auth"
+
 export default function LoginPage() {
 
+    const router = useRouter()
     const [serverError, setServerError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -27,23 +33,19 @@ export default function LoginPage() {
       });
 
       const onSubmit = async (data: UserLoginInput) => {
-        setIsLoading(true);
-        setServerError(null);
-    
-        console.log(data)
-    
-        try {
-          //const apiUrl = process.env.NEXT_PUBLIC_API_URL || "";
-          const response = await axios.post(`/api/auth/login`, data);
-          console.log("Registration successful:", response.data);
-          // Redirect or show success message here
-        } catch (error: any) {
-          setServerError(
-            error.response?.data?.message || "Something went wrong. Please try again."
-          );
-        } finally {
-          setIsLoading(false);
-        }
+         const res = await signIn("credentials", {
+            email: data.email,
+            password: data.password,
+            redirect: false
+         })
+
+         if(res?.error) {
+            setServerError("Invalid credentials")
+            console.log(res.error)
+            return
+         }
+
+         router.push("/redirect")
       };
 
   return (
