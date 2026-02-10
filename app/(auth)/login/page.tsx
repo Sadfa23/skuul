@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form"
 import { redirect } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
-import { Session } from "next-auth"
+import GoogleLoginButton from "./loginPageButton"
 
 export default function LoginPage() {
 
@@ -77,6 +77,7 @@ export default function LoginPage() {
             <Button type="submit" className="w-full">
               Sign In
             </Button>
+            <GoogleLoginButton/>
           </form>
         </CardContent>
         <CardFooter className="text-center text-sm text-gray-500">

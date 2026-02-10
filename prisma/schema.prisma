@@ -51,20 +51,35 @@ model VerificationToken {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
-  password_hash String
+  password_hash String?
   first_name    String?
   last_name     String?
-  role          UserRole  @default(STUDENT)
+  role          UserRole?  @default(STUDENT)
   bio           String?
   avatar_url    String    @default("https://example.com/default-avatar.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  courses       Course[]  @relation("TutorCourses")//one to many relationship. One user can teach many courses
+
+
+
 }
 
 enum UserRole {
   STUDENT
   TUTOR
   ADMIN
+}
+
+model Course {
+  id            String    @id @default(cuid())
+  tutor         User      @relation("TutorCourses", fields: [tutorId], references: [id])
+  tutorId       String
+  course_name   String
+  description   String
+  banner_image  String?
+
+  
 }

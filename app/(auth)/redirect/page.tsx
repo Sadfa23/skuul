@@ -6,6 +6,11 @@ export default async function RoleRedirect() {
     const session = await getServerSession(authOptions) 
     if (!session) redirect("/login")
     const role = session.user.role
+
+    if (!role) {
+        redirect("/usertype")
+    }
+    
     if (role==="ADMIN") {
         redirect("/admin")
     }
@@ -15,4 +20,5 @@ export default async function RoleRedirect() {
     if (role==="TUTOR") {
         redirect("/tutor")
     }
+    
 }
