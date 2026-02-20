@@ -8,7 +8,8 @@ import { NextRequest } from "next/server";
 export async function GET(req:NextRequest, 
     {params} : {params : {courseId: string}}) {
 
-    const {courseId} = params
+    const {courseId} = await params
+    console.log(courseId)
     try {  
         const course = await prisma.course.findUnique({
             where : {
@@ -39,7 +40,7 @@ export async function DELETE(
                 message: "Unauthorized"
             })
         }
-        const {courseId} = params;
+        const {courseId} = await params;
         const deletedCourse = await prisma.course.delete({
             where: {
                 id : courseId

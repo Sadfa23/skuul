@@ -21,9 +21,18 @@ export default function UserTypePage() {
     <div className="space-y-4">
       <h1>Select your role</h1>
 
-      <button onClick={() => selectRole("STUDENT")}>Student</button>
-      <button onClick={() => selectRole("TUTOR")}>Tutor</button>
-      <button onClick={() => selectRole("ADMIN")}>Admin</button>
+      <button className="bg-blue-600 p-3 rounded-s-sm"
+      onClick={() => selectRole("STUDENT")}>
+        Student
+      </button>
+      <button className="bg-blue-600 p-3 rounded-s-sm"
+      onClick={() => selectRole("TUTOR")}>
+        Tutor
+        
+      </button>
+      <button className="bg-blue-600 p-3 rounded-s-sm"onClick={() => selectRole("ADMIN")}>
+        Admin
+      </button>
     </div>
   )
 }

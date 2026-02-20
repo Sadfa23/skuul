@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const { firstname, lastname, email, password, role } = await req.json()
 
-    //console.log(firstname, lastname, email, password, role)
+    console.log(firstname, lastname, email, password, role)
 
     if (!email || !password) {
       return NextResponse.json(

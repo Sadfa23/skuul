@@ -59,12 +59,10 @@ model User {
   avatar_url    String    @default("https://example.com/default-avatar.png")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  price         Float    @default(0)
   accounts      Account[]
   sessions      Session[]
   courses       Course[]  @relation("TutorCourses")//one to many relationship. One user can teach many courses
-
-
-
 }
 
 enum UserRole {
@@ -79,7 +77,30 @@ model Course {
   tutorId       String
   course_name   String
   description   String
+  price         Float     @default(0)
+  prerequisites String?
+  course_level  String?
   banner_image  String?
+  intro_video   String?
+  modules       Modules[]
+}
 
+model Modules {
+  id            String    @id @default(cuid())
+  module_title  String
+  module_description String
+  courseId      String
+  course        Course    @relation(fields: [courseId], references: [id])
+  lessons       Lessons[]
   
 }
+
+model Lessons {
+  id            String    @id @default(cuid())
+  lesson_title  String
+  lesson_description String?
+  moduleId       String   
+  module         Modules @relation(fields: [moduleId], references: [id])
+}
+
+// We are going to need a way to handle, video lessons, pdf's, images
