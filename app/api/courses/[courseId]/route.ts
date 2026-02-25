@@ -6,7 +6,7 @@ import { NextRequest } from "next/server";
 
 // Get a particular course. Course page
 export async function GET(req:NextRequest, 
-    {params} : {params : {courseId: string}}) {
+    {params} : {params :Promise<{courseId: string}>}) {
 
     const {courseId} = await params
     console.log(courseId)
@@ -30,7 +30,7 @@ export async function GET(req:NextRequest,
 
 export async function DELETE(
     req: NextRequest,
-    {params} : {params : {courseId: string}}
+    {params} : {params : Promise<{courseId: string}>}
 ) {
     try {
         const session  = await getServerSession(authOptions)
@@ -62,7 +62,7 @@ export async function DELETE(
 
 export async function PATCH(
     req: NextRequest,
-    {params} : {params : {courseId: string}}
+    {params} : {params : Promise<{courseId: string}>}
 ) {
     try {
         const session  = await getServerSession(authOptions)
@@ -72,7 +72,7 @@ export async function PATCH(
                 message: "Unauthorized"
             })
         }
-        const {courseId} = params;
+        const {courseId} = await params;
         const updateCourseInfo = await req.json()
         const updatedCourse = await prisma.course.update({
             where: {

@@ -5,9 +5,9 @@ import { authOptions } from "@/app/lib/auth";
 
 // This is a route for getting tutosr infgo
 
-export async function GET(req: NextRequest, {params}:{params: {tutorId: string}}) {
+export async function GET(req: NextRequest, {params}:{params: Promise<{tutorId: string}>}) {
     try {
-        const {tutorId} = params
+        const {tutorId} = await params
         /*
         const session = await getServerSession(authOptions);
         if (!session || session.user.role !== "TUTOR") {
