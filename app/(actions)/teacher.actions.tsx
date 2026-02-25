@@ -1,28 +1,22 @@
-/*
-model Modules {
-  id            String    @id @default(cuid())
-  module_title  String
-  module_description String
-  courseId      String
-  course        Course    @relation(fields: [courseId], references: [id])
-  lessons       Lessons[]
-  
+interface Module {
+  courseId: string;
+  title: string;
+  description: string;
 }
 
-model Lessons {
-  id            String    @id @default(cuid())
-  lesson_title  String
-  lesson_description String?
-  moduleId       String   
-  module         Modules @relation(fields: [moduleId], references: [id])
+interface Lesson {
+  courseId: string;
+  title: string;
+  description: string;
 }
-*/
+
 import { authOptions } from "../lib/auth";
 import { getServerSession } from "next-auth";
 import { prisma } from "../lib/prisma";
-
+import { NextResponse } from "next/server";
+/*
 // This function takes the userId, courseName and lessons
-export async function addModule(cleanedModules: []) {
+export async function addModule(cleanedModules: Module[]) {
     try {
         const newModulesAndLessons = await prisma.$transaction(async (tx) => {
             for (const module of cleanedModules) {
@@ -45,11 +39,14 @@ export async function addModule(cleanedModules: []) {
             }
           });
     } catch (error) {
-        
+        console.log("Error in adding the modules and lessons"
+          , error
+        )
+        return NextResponse.json({success: false, error})
     }
 }
 
-export async function createModulesWithLessons(modules) {
+export async function createModulesWithLessons(modules:Module) {
     return await prisma.$transaction(async (tx) => {
       for (const mod of modules) {
         const createdModule = await tx.module.create({
@@ -69,17 +66,5 @@ export async function createModulesWithLessons(modules) {
         }
       }
     });
-  }
-
-export async function uploadVideos() {
-    
 }
-export async function uploadImage() {
-    
-}
-
-// Statistics students enrolled, revenue etc
-export async function getCourseStatics() {
-    
-}
-//quizes, tests, and assignments
+*/

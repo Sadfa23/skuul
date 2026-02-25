@@ -305,7 +305,7 @@ export default function CourseDetailPage() {
               </svg>
             </button>
             <h1 className="text-2xl font-bold text-gray-900">
-              {course?.course_name || "Loading"}
+              {"pLACE HOLDER COURSE NAME"}
             </h1>
           </div>
           <div className="flex items-center gap-3">

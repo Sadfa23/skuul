@@ -5,18 +5,7 @@ import { getServerSession } from 'next-auth'
 import { prisma } from '@/app/lib/prisma'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-/*
-<div>
-      courseCardComponent -done
-      api to get courses where tutorId === user.id  -done
-       
-      profile schema
-      api to create/delete course
-      each card component to have delete and edit buttons- this one to be done later
-      teacher to be able to update profile
-      course statistics to be displayed in the card
-    </div>
-*/
+
 
 async function page() {
   const session = await getServerSession(authOptions);
@@ -42,6 +31,7 @@ async function page() {
         {tutorsCourses.map(course => (
           <CourseCard 
           key={course.id}
+          course_id={course.id}
           course_name={course.course_name} 
           price={course.price} 
           course_level={course.course_level} 
