@@ -33,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useCallback } from 'react';
+import {CldUploadWidget, CldUploadButton} from "next-cloudinary"
 
 interface Material {
   id: string;
@@ -61,12 +62,6 @@ interface Module {
   isExpanded: boolean;
 }
 
-interface MediaUploadState {
-  file: File | null;
-  preview: string | null;
-  secure_url: string | null;
-  publicId: string | null;
-}
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -83,108 +78,6 @@ export default function CourseDetailPage() {
   const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
   const [isLoading, setIsloading] = useState<boolean>(false)
 
-  // File upload stuff
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [introVideo, setIntroVideo] = useState<MediaUploadState>({
-      file: null,
-      preview: null,
-      secure_url: null,
-      publicId: null,
-    });
-  
-    const [thumbnail, setThumbnail] = useState<MediaUploadState>({
-      file: null,
-      preview: null,
-      secure_url: null,
-      publicId: null,
-    });
-  
-    const [bannerImage, setBannerImage] = useState<MediaUploadState>({
-      file: null,
-      preview: null,
-      secure_url: null,
-      publicId: null,
-    });
-  
-    const [isUploadingVideo, setIsUploadingVideo] = useState(false);
-    const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
-    const [isUploadingBanner, setIsUploadingBanner] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState<{
-      video?: number;
-      thumbnail?: number;
-      banner?: number;
-    }>({});
-
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const handleVideoUpload = useCallback(
-      async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          if (!file.type.startsWith('video/')) {
-            setErrors((prev) => ({
-              ...prev,
-              video: 'Please select a valid video file',
-            }));
-            return;
-          }
-  
-          // Create preview immediately
-          const videoUrl = URL.createObjectURL(file);
-          setIntroVideo((prev) => ({
-            ...prev,
-            file,
-            preview: videoUrl,
-          }));
-  
-          // Upload to Cloudinary
-          setIsUploadingVideo(true);
-          setUploadProgress((prev) => ({ ...prev, video: 0 }));
-  
-          try {
-            const uploadFormData = new FormData();
-            uploadFormData.append('file', file);
-  
-            const response = await fetch('/api/upload', {
-              method: 'POST',
-              body: uploadFormData,
-            });
-  
-            if (!response.ok) {
-              console.log(response)
-              throw new Error('Failed to upload video');
-            }
-  
-            const data = await response.json();
-  
-            // Store the secure_url and public_id
-            setIntroVideo((prev) => ({
-              ...prev,
-              secure_url: data.secure_url,
-              publicId: data.public_id,
-            }));
-  
-            setUploadProgress((prev) => ({ ...prev, video: 100 }));
-            setErrors((prev) => ({ ...prev, video: '' }));
-          } catch (error) {
-            console.error('Error uploading video:', error);
-            setErrors((prev) => ({
-              ...prev,
-              video: 'Failed to upload video. Please try again.',
-            }));
-            // Clear the preview on error
-            setIntroVideo({
-              file: null,
-              preview: null,
-              secure_url: null,
-              publicId: null,
-            });
-          } finally {
-            setIsUploadingVideo(false);
-          }
-        }
-      },
-      []
-    );
 
   useEffect(() => {
     if (!courseId) return;
@@ -394,7 +287,7 @@ export default function CourseDetailPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.back()}
+              ///onClick={() => router.back()}
               className="p-2 hover:bg-gray-200 rounded-lg"
             >
               <svg
@@ -873,51 +766,96 @@ export default function CourseDetailPage() {
 
                               {/* Add Materials Buttons */}
                               <div className="ml-8 flex items-center gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() =>
-                                    handleAddMaterial(
-                                      module.id,
-                                      lesson.id,
-                                      'video'
-                                    )
+                                <CldUploadWidget 
+                                uploadPreset="file upload"
+                                onSuccess={(result)=> {
+                                  const info = result.info as any
+                                  if (info?.secure_url) {
+                                    console.log("Secure url", info.secure_url)
+                                  }
+                                }}
+                                >
+                                  {({open}) => {
+                                    return (
+                                      <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => open()  
+                                      
                                   }
                                   className="text-xs"
                                 >
                                   <Video className="w-3 h-3 mr-1" />
                                   Add Video
                                 </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() =>
-                                    handleAddMaterial(
-                                      module.id,
-                                      lesson.id,
-                                      'pdf'
                                     )
+                                  }
+                                  }
+                                
+                                </CldUploadWidget>
+
+                                <CldUploadWidget 
+                                uploadPreset="file upload"
+                                options={{
+                                  resourceType: "image",
+                                }}
+                                onSuccess={(result)=> {
+                                  const info = result.info as any
+                                  if (info?.secure_url) {
+                                    console.log("Secure url", info.secure_url)
+                                  }
+                                }}
+                                >
+                                  {({open}) => {
+                                    return (
+                                      <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => open()  
+                                      
                                   }
                                   className="text-xs"
                                 >
                                   <FileText className="w-3 h-3 mr-1" />
                                   Add PDF
                                 </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() =>
-                                    handleAddMaterial(
-                                      module.id,
-                                      lesson.id,
-                                      'image'
                                     )
+                                  }
+                                  }
+                                
+                                </CldUploadWidget>
+
+                                <CldUploadWidget 
+                                uploadPreset="file upload"
+                                options={{
+                                  resourceType: "image",
+                                  maxFileSize:20000000
+                                }}
+                                onSuccess={(result)=> {
+                                  const info = result.info as any
+                                  if (info?.secure_url) {
+                                    console.log("Secure url", info.secure_url)
+                                  }
+                                }}
+                                >
+                                  {({open}) => {
+                                    return (
+                                      <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => open()  
+                                      
                                   }
                                   className="text-xs"
                                 >
                                   <ImageIcon className="w-3 h-3 mr-1" />
                                   Add Image
                                 </Button>
+                                    )
+                                  }
+                                  }
+                                
+                                </CldUploadWidget>
                               </div>
                             </div>
                           ))}

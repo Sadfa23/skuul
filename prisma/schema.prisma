@@ -62,6 +62,7 @@ model User {
   price         Float    @default(0)
   accounts      Account[]
   sessions      Session[]
+  enrollments   Enrollment[]
   courses       Course[]  @relation("TutorCourses")//one to many relationship. One user can teach many courses
 }
 
@@ -83,6 +84,19 @@ model Course {
   banner_image  String?
   intro_video   String?
   modules       Modules[]
+  enrolledStudents Enrollment[]
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId  String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId   String
+  enrolledAt DateTime @default(now())
+  completed  Boolean  @default(false)
+
+  @@unique([studentId, courseId]) 
 }
 
 model Modules {
@@ -101,6 +115,16 @@ model Lessons {
   lesson_description String?
   moduleId       String   
   module         Modules @relation(fields: [moduleId], references: [id])
+  materials      Material[]
 }
 
+model Material {
+  id         String   @id @default(uuid())
+  name       String
+  secureUrl  String
+  type       String   // pdf, image, doc, etc
+  lesson     Lessons   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId   String
+  createdAt  DateTime @default(now())
+}
 // We are going to need a way to handle, video lessons, pdf's, images

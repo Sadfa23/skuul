@@ -3,8 +3,9 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
-
+import Link from "next/link"
 interface CourseCardProps {
+  course_id: string
   course_name: string
   price: number
   banner_image?: string | null
@@ -12,12 +13,14 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({
+  course_id,
   course_name,
   price,
   banner_image,
   course_level,
 }: CourseCardProps) {
   return (
+    <Link href={`/student/courses/${course_id}`}>
     <Card className="overflow-hidden rounded-xl border border-gray-100 bg-white hover:shadow-lg transition-shadow cursor-pointer">
       
       {/* Banner Image */}
@@ -59,5 +62,6 @@ export default function CourseCard({
 
       </CardContent>
     </Card>
+    </Link>
   )
 }
